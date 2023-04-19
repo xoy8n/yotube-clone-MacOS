@@ -1,28 +1,23 @@
 import express from 'express';
+import morgan from 'morgan';
 
 const PORT = 3800;
+
 const app = express();
 
-// const handleHome = () => console.log('Hello World!');
-const logger = (req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
+const logger = morgan('combined');
+
+const home = (req, res) => {
+  console.log('i will respond');
+  return res.send('hello');
 };
-const privateMiddleware = (req, res, next) => {
-  const url = req.url;
-  if (url === '/protected') {
-    res.send('<h1>not allowed</h1>');
-  }
-  console.log('you are allowed to be here');
-  next();
+const login = (req, res) => {
+  return res.send('login');
 };
-const handleHome = (req, res) => res.send('i love middleware');
-const handleProtected = (req, res) => res.end();
 
 app.use(logger);
-app.use(privateMiddleware);
-app.get('/protected', handleProtected);
-app.get('/', handleHome);
+app.get('/', home);
+app.get('/login', login);
 
 const handleListening = () => {
   console.log(`Server listening on http://localhost:${PORT}🚀`);
